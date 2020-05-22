@@ -1,6 +1,6 @@
 // const path = require('path');
 const express = require('express');
-// const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const users = require('./routes/users');
 const cards = require('./routes/cards');
@@ -26,8 +26,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 // статическая раздача
 // app.use(express.static(path.join(__dirname, 'public')));
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // временное решение авторизации:
 app.use((req, res, next) => {

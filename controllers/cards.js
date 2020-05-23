@@ -7,19 +7,28 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner })
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(400).send({ message: `${err}` }));
+    // .catch((err) => res.status(400).send({ message: `${err}` }));
+    .catch((err) => res.status(400).json({ message: err.message }));
 };
 
 const allCards = (req, res) => {
   Card.find({})
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(400).send({ message: `${err}` }));
+    // .catch((err) => res.status(400).send({ message: `${err}` }));
+    .catch((err) => res.status(400).json({ message: err.message }));
 };
 
 const delCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(404).send({ message: `${err}` }));
+    .then((card) => {
+      if (!card) {
+        return res.status(404).send({ message: 'Card not found' });
+      }
+      return res.send({ data: card });
+    })
+    // .then((card) => res.send({ data: card }))
+    // .catch((err) => res.status(404).send({ message: `${err}` }));
+    .catch((err) => res.status(404).json({ message: err.message }));
 };
 
 module.exports = { createCard, allCards, delCard };

@@ -18,7 +18,7 @@ const allUsers = (req, res) => {
     .catch((err) => res.status(400).json({ message: err.message }));
 };
 
- const oneUser = (req, res) => {
+const oneUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
@@ -30,7 +30,7 @@ const allUsers = (req, res) => {
     .catch((err) => res.status(404).json({ message: err.message }));
 };
 
-/*const oneUser = (req, res) => {
+/* const oneUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       // const userFind = user.find((item) => item.id === req.params.id);

@@ -7,15 +7,29 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner })
     .then((card) => res.send({ data: card }))
-    // .catch((err) => res.status(400).send({ message: `${err}` }));
-    .catch((err) => res.status(400).json({ message: err.message }));
+    .catch((err) => {
+      if (err.name === err.ValidationError) {
+        return res.status(400).send({ message: err.message });
+      }
+      if (err.name === err.CastError) {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
 
 const allCards = (req, res) => {
   Card.find({})
     .then((card) => res.send({ data: card }))
-    // .catch((err) => res.status(400).send({ message: `${err}` }));
-    .catch((err) => res.status(400).json({ message: err.message }));
+    .catch((err) => {
+      if (err.name === err.ValidationError) {
+        return res.status(400).send({ message: err.message });
+      }
+      if (err.name === err.CastError) {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
 
 const delCard = (req, res) => {
@@ -26,9 +40,15 @@ const delCard = (req, res) => {
       }
       return res.send({ data: card });
     })
-    // .then((card) => res.send({ data: card }))
-    // .catch((err) => res.status(404).send({ message: `${err}` }));
-    .catch((err) => res.status(404).json({ message: err.message }));
+    .catch((err) => {
+      if (err.name === err.ValidationError) {
+        return res.status(400).send({ message: err.message });
+      }
+      if (err.name === err.CastError) {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
 
 module.exports = { createCard, allCards, delCard };

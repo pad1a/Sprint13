@@ -7,10 +7,10 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === err.ValidationError) {
+      if (err.name === 'ValidationError') {
         return res.status(400).send({ message: err.message });
       }
-      if (err.name === err.CastError) {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: err.message });
       }
       return res.status(500).send({ message: err.message });
@@ -21,10 +21,10 @@ const allUsers = (req, res) => {
   User.find({})
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === err.ValidationError) {
+      if (err.name === 'ValidationError') {
         return res.status(400).send({ message: err.message });
       }
-      if (err.name === err.CastError) {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: err.message });
       }
       return res.status(500).send({ message: err.message });
@@ -40,10 +40,10 @@ const oneUser = (req, res) => {
       return res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === err.ValidationError) {
+      if (err.name === 'ValidationError') {
         return res.status(400).send({ message: err.message });
       }
-      if (err.name === err.CastError) {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: err.message });
       }
       return res.status(500).send({ message: err.message });

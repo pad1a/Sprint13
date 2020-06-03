@@ -34,7 +34,7 @@ const createUser = (req, res) => {
       })
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          return res.status(400)
+          return res.status(409)
             .send({ message: err.message });
         }
         if (err.name === 'CastError') {

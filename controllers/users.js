@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const User = require('../models/user');
 
-module.exports.createUser = (req, res) => {
+const createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -80,7 +80,7 @@ const oneUser = (req, res) => {
     });
 };
 
-module.exports.login = (req, res) => {
+const login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByEmail(email, password)
     .then((user) => {
@@ -96,4 +96,6 @@ module.exports.login = (req, res) => {
     });
 };
 
-module.exports = { allUsers, oneUser };
+module.exports = {
+  createUser, allUsers, oneUser, login,
+};

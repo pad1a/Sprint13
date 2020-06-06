@@ -45,7 +45,7 @@ const delCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Карточка не найдена' });
-      } else if (toString(card.owner) === toString(req.user._id)) {
+      } else if (card.owner.toString() === req.user._id) {
         card.remove(req.params.cardId);
         res.status(200).send(card);
       } else {

@@ -6,7 +6,4 @@ const { createUser, allUsers, oneUser } = require('../controllers/users');
 usersRoute.get('/', allUsers);
 usersRoute.get('/:userId', oneUser);
 
-// POST
-usersRoute.post('/', createUser);
-
 module.exports = usersRoute;

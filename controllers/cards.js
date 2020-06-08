@@ -1,12 +1,20 @@
 // controllers/cards.js
 // это файл контроллеров
+const validator = require('validator');
 const Card = require('../models/card');
 
 const createCard = (req, res) => {
-  const owner = req.user._id;
-  const { name, link } = req.body;
-  Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+  const {
+    name, link, createdAt,
+  } = req.body;
+  Card.create({
+    name, link, owner: req.user._id, createdAt,
+  })
+    .then((card) => {
+      if (validator.isURL(link)) {
+        res.status(200).send({ data: card });
+      } else res.status(400).send({ message: 'Некорректная ссылка на изображение' });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: err.message });
@@ -33,12 +41,16 @@ const allCards = (req, res) => {
 };
 
 const delCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Card not found' });
+        res.status(404).send({ message: 'Карточка не найдена' });
+      } else if (card.owner.toString() === req.user._id) {
+        card.remove(req.params.cardId);
+        res.status(200).send(card);
+      } else {
+        res.status(403).send({ message: 'Нет прав на удаление' });
       }
-      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

@@ -5,9 +5,9 @@ const express = require('express');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const { Joi, celebrate, errors } = require('celebrate');
 const auth = require('./middlewares/auth');
 const routes = require('./routes/routes.js');
-const { Joi, celebrate, errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { ErrorMiddleware } = require('./middlewares/error');
 const { urlValidate } = require('./middlewares/isURL');
@@ -16,11 +16,11 @@ const { login, createUser } = require('./controllers/users');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-const limiter = rateLimit({
+/* const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
 });
-
+*/
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -34,7 +34,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(limiter);
+// app.use(limiter);
 app.use(helmet());
 app.use(requestLogger);
 

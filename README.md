@@ -23,4 +23,4 @@ MangooDB
 ##### PUT /cards/ID/likes - Добавляет лайк карточке
 ##### DELETE /cards/ID/likes - Удаляет лайк карточки
 
-##### Link https://api.0911.ru
+##### Link api.0911.ru

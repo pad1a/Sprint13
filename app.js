@@ -1,14 +1,26 @@
-// const path = require('path');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const express = require('express');
+require('dotenv').config();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const users = require('./routes/users');
-const cards = require('./routes/cards');
-
+const { Joi, celebrate, errors } = require('celebrate');
+const auth = require('./middlewares/auth');
+const routes = require('./routes/routes.js');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { ErrorMiddleware } = require('./middlewares/error');
+const { urlValidate } = require('./middlewares/isURL');
+const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 const app = express();
 
+/* const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+*/
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -16,33 +28,50 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-// логирование
-/* const timeLog = (req, res, next) => {
-  console.log(new Date(), req.method);
-  next();
-};
-*/
-// app.use(timeLog);
-
 // статическая раздача
 // app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// временное решение авторизации:
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5ec435607432699b7cba5fc1',
-  };
-  next();
+// app.use(limiter);
+app.use(helmet());
+app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Падение сервера');
+  }, 0);
 });
 
-app.use('/users', users);
-app.use('/cards', cards);
-app.use((req, res) => res.status(404).send({ message: `Запрашиваемый ресурс: ${req.url} не найден` }));
-app.use((err, req, res) => res.status(500).json({ message: `Ошибка${err}` }));
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+    // eslint-disable-next-line no-useless-escape
+    avatar: Joi.string().custom(urlValidate, 'urlValidator').required(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }),
+}), createUser);
+
+// защитили все роуты кроме создания юзера и логина
+app.use(auth);
+app.use('/', routes);
+
+app.use(errorLogger);
+app.use(errors());
+app.use(ErrorMiddleware);
+
 
 // слушаем сервер при каждом обращении
 app.listen(PORT, () => {
-  // console.log(`App listening on port ${PORT}`);
+  // eslint-disable-next-line no-console
+  console.log(`App listening on port ${PORT}`);
 });

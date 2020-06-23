@@ -1,7 +1,6 @@
 // models/user.js
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-// const validate = require('mongoose-validator');
 const uniqueValidator = require('mongoose-unique-validator');
 const isEmail = require('validator/lib/isEmail');
 const isURL = require('validator/lib/isURL');

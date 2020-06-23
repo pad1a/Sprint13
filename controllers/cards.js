@@ -1,6 +1,6 @@
 // controllers/cards.js
 // это файл контроллеров
-// const validator = require('validator');
+
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-err');
 const ForBidError = require('../errors/for-bid-err');

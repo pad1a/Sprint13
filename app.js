@@ -27,8 +27,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-// статическая раздача
-// app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -53,7 +51,6 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
-    // eslint-disable-next-line no-useless-escape
     avatar: Joi.string().custom(urlValidate, 'urlValidator').required(),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),

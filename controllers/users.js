@@ -6,10 +6,8 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-// const validator = require('validator');
 const BadReqError = require('../errors/bad-req-err');
 const ConflictError = require('../errors/conflict-err');
-// const AuthError = require('../errors/auth-err');
 const NotFoundError = require('../errors/not-found-err');
 
 const getUsers = (req, res, next) => {
@@ -45,7 +43,6 @@ const createUser = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadReqError('Неверный запрос');
       }
-      // eslint-disable-next-line eqeqeq
       if (err.errors.email.kind === 'unique') {
         throw new ConflictError('Такой E-mail уже используется');
       }

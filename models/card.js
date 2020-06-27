@@ -1,6 +1,6 @@
 // models/user.js
+
 const mongoose = require('mongoose');
-// const validate = require('mongoose-validator');
 const isURL = require('validator/lib/isURL');
 
 const cardSchema = new mongoose.Schema({
